@@ -241,9 +241,10 @@ Text_CallMomOnGear:
 Text_ElmDiscoveredNewMon:
 	text "Yo, <PLAYER>!"
 
-	para "I hear PROF.ELM"
-	line "discovered some"
-	cont "new #MON."
+	para "How are you?"
+	line "I wish I was"
+	cont "brave enough to"
+	cont "go naked, too!"
 	done
 
 NewBarkTownRivalText1:
@@ -257,6 +258,10 @@ NewBarkTownRivalText1:
 NewBarkTownRivalText2:
 	text "…What are you"
 	line "staring at?"
+	
+	para "Also, put on"
+	line "some clothes,"
+	cont " weirdo!"
 	done
 
 NewBarkTownSignText:

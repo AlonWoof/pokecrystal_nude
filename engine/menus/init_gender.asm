@@ -21,20 +21,20 @@ InitCrystalData:
 INCLUDE "mobile/mobile_12.asm"
 
 InitGender:
-	call InitGenderScreen
-	call LoadGenderScreenPal
-	call LoadGenderScreenLightBlueTile
-	call WaitBGMap2
-	call SetPalettes
-	ld hl, AreYouABoyOrAreYouAGirlText
-	call PrintText
-	ld hl, .MenuHeader
-	call LoadMenuHeader
-	call WaitBGMap2
-	call VerticalMenu
-	call CloseWindow
-	ld a, [wMenuCursorY]
-	dec a
+	;call InitGenderScreen
+	;call LoadGenderScreenPal
+	;call LoadGenderScreenLightBlueTile
+	;call WaitBGMap2
+	;call SetPalettes
+	;ld hl, AreYouABoyOrAreYouAGirlText
+	;call PrintText
+	;ld hl, .MenuHeader
+	;call LoadMenuHeader
+	;call WaitBGMap2
+	;call VerticalMenu
+	;call CloseWindow
+	ld a, 1
+	;dec a
 	ld [wPlayerGender], a
 	ld c, 10
 	call DelayFrames

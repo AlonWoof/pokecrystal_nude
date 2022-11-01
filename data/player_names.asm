@@ -29,8 +29,8 @@ KrisNameMenuHeader:
 	db 5 ; items
 	db "NEW NAME@"
 FemalePlayerNameArray:
+	db "JENNY@"
 	db "KRIS@"
-	db "AMANDA@"
 	db "JUANA@"
 	db "JODI@"
 	db 2 ; title indent

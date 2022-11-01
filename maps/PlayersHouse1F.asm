@@ -294,7 +294,8 @@ HurryUpElmIsWaitingText:
 	text "PROF.ELM is wait-"
 	line "ing for you."
 
-	para "Hurry up, baby!"
+	para "Don't keep him"
+	line "waiting, dear."
 	done
 
 SoWhatWasProfElmsErrandText:

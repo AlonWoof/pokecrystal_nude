@@ -216,7 +216,6 @@ SECTION "Pics 9", ROMX
 
 EkansFrontpic:       INCBIN "gfx/pokemon/ekans/front.animated.2bpp.lz"
 SudowoodoFrontpic:   INCBIN "gfx/pokemon/sudowoodo/front.animated.2bpp.lz"
-PikachuFrontpic:     INCBIN "gfx/pokemon/pikachu/front.animated.2bpp.lz"
 SeadraFrontpic:      INCBIN "gfx/pokemon/seadra/front.animated.2bpp.lz"
 MagbyFrontpic:       INCBIN "gfx/pokemon/magby/front.animated.2bpp.lz"
 WeepinbellFrontpic:  INCBIN "gfx/pokemon/weepinbell/front.animated.2bpp.lz"
@@ -523,6 +522,7 @@ JaninePic:           INCBIN "gfx/trainers/janine.2bpp.lz"
 MagnemiteBackpic:    INCBIN "gfx/pokemon/magnemite/back.2bpp.lz"
 
 
+
 SECTION "Pics 16", ROMX
 
 HoothootBackpic:     INCBIN "gfx/pokemon/hoothoot/back.2bpp.lz"
@@ -779,6 +779,7 @@ INCBIN "gfx/pokemon/unown_r/back.2bpp.lz"
 ; but entries for their banks exist in FixPicBank (see engine/gfx/load_pics.asm).
 
 SECTION "Pics 20", ROMX
+PikachuFrontpic:     INCBIN "gfx/pokemon/pikachu/front.animated.2bpp.lz"
 
 SECTION "Pics 21", ROMX
 

@@ -15,11 +15,11 @@ _OakText7::
 	line "times and tough"
 	cont "challenges."
 
-	para "A world of dreams"
-	line "and adventures"
+	para "A new nudist "
+	line "adventure with"
 
-	para "with #MON"
-	line "awaits! Let's go!"
+	para "#MON awaits!"
+	line "Let's go!"
 
 	para "I'll be seeing you"
 	line "later!"
