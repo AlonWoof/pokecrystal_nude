@@ -355,8 +355,7 @@ NeighborText:
 PlayersHouse1FStoveText:
 	text "Mom's specialty!"
 
-	para "CINNABAR VOLCANO"
-	line "BURGER!"
+	para "VOLCANO BAKEMEAT!"
 	done
 
 PlayersHouse1FSinkText:

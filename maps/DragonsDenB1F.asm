@@ -317,8 +317,8 @@ RivalText_Training2:
 	done
 
 CooltrainermDarinSeenText:
-	text "You! How dare you"
-	line "enter uninvited!"
+	text "What? A naked girl?"
+	line "What's going on here?"
 	done
 
 CooltrainermDarinBeatenText:

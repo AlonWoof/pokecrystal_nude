@@ -334,7 +334,16 @@ CherrygroveCity_RivalExitsStageLeft:
 	step_end
 
 GuideGentIntroText:
-	text "You're a rookie"
+	text "Lass, why are you"
+	line "running around"
+	cont "naked like that?"
+
+	para "Oh well. Kids"
+	line "will be kids."
+
+	para "Anyways..."
+
+	para "You're a rookie"
 	line "trainer, aren't"
 	cont "you? I can tell!"
 
@@ -433,6 +442,9 @@ GuideGentNoText:
 CherrygroveRivalText_Seen:
 	text "<……> <……> <……>"
 
+	para "Hey, you're that"
+	line "naked freak..."
+
 	para "You got a #MON"
 	line "at the LAB."
 
@@ -460,6 +472,7 @@ CherrygroveRivalText_YouLost:
 	text "<……> <……> <……>"
 
 	para "My name's ???."
+
 
 	para "I'm going to be"
 	line "the world's great-"

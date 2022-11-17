@@ -261,7 +261,7 @@ NewBarkTownRivalText2:
 	
 	para "Also, put on"
 	line "some clothes,"
-	cont " weirdo!"
+	cont "freak!"
 	done
 
 NewBarkTownSignText:

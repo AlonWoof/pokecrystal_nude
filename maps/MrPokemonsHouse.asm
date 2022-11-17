@@ -174,8 +174,10 @@ MrPokemonIntroText1:
 	text "Hello, hello! You"
 	line "must be <PLAY_G>."
 
-	para "PROF.ELM said that"
-	line "you would visit."
+	para "PROF.ELM said a nudist"
+	line "girl with an EEVEE"
+	cont "would visit."
+
 	done
 
 MrPokemonIntroText2:
@@ -255,6 +257,12 @@ MrPokemonsHouse_OakText1:
 
 	para "for PROF.ELM, so I"
 	line "waited here."
+
+	para "Wow, you must be"
+	line "quite the trainer"
+
+	para "to make it here"
+	line "completely naked!"	
 
 	para "Oh! What's this?"
 	line "A rare #MON!"
