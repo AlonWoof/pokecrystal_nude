@@ -76,7 +76,7 @@ endc
 	jp z, .LinkCanceled
 	cp MG_OKAY
 	jp nz, .CommunicationError
-	ld a, [wMysteryGiftGameVersion]
+	ld a, [wMysteryGiftPartnerGameVersion]
 	cp POKEMON_PIKACHU_2_VERSION
 	jr z, .skip_checks
 	call .CheckAlreadyGotFiveGiftsToday
@@ -92,17 +92,17 @@ endc
 	ld a, [wMysteryGiftPartnerBackupItem]
 	and a
 	jp nz, .FriendNotReady
-	ld a, [wMysteryGiftGameVersion]
+	ld a, [wMysteryGiftPartnerGameVersion]
 	cp POKEMON_PIKACHU_2_VERSION
 	jr z, .skip_append_save
 	call .AddMysteryGiftPartnerID
-	ld a, [wMysteryGiftGameVersion]
+	ld a, [wMysteryGiftPartnerGameVersion]
 	cp RESERVED_GAME_VERSION
 	jr z, .skip_append_save
 	call .SaveMysteryGiftTrainerName
-	farcall RestoreMobileEventIndex
+	farcall RestoreGSBallFlag
 	farcall StubbedTrainerRankings_MysteryGift
-	farcall BackupMobileEventIndex
+	farcall BackupGSBallFlag
 .skip_append_save
 	ld a, [wMysteryGiftPartnerSentDeco]
 	and a
@@ -307,7 +307,7 @@ endc
 	ldh a, [hMGRole]
 	cp IR_SENDER
 	jr z, SenderExchangeMysteryGiftDataPayloads
-; receiver
+
 	ld hl, hMGExchangedByte
 	ld b, 1
 	call TryReceivingIRDataBlock
@@ -522,7 +522,7 @@ EndOrContinueMysteryGiftIRCommunication:
 	ldh a, [hMGRole]
 	cp IR_SENDER
 	jr z, .sender
-; receiver
+
 	call BeginReceivingIRCommunication
 	jr nz, EndOrContinueMysteryGiftIRCommunication
 	jp ReceiverExchangeMysteryGiftDataPayloads
@@ -563,7 +563,7 @@ ExchangeNameCardData:
 	ldh a, [hMGRole]
 	cp IR_SENDER
 	jr z, .sender
-; receiver
+
 	; Receive the data payload
 	call ReceiveNameCardDataPayload
 	jp nz, EndNameCardIRCommunication
@@ -1748,13 +1748,13 @@ StageDataForNameCard:
 	ld a, [sCrystalData + 0]
 	ld [de], a
 	inc de
-	ld a, BANK(s4_a603) ; aka BANK(s4_a007) ; MBC30 bank used by JP Crystal; inaccessible by MBC3
+	ld a, BANK(s4_a603) ; aka BANK(sEZChatMessages) ; MBC30 bank used by JP Crystal; inaccessible by MBC3
 	call OpenSRAM
 	ld hl, s4_a603 ; address of MBC30 bank
 	ld bc, 8
 	call CopyBytes
-	ld hl, s4_a007 ; address of MBC30 bank
-	ld bc, 12
+	ld hl, sEZChatIntroductionMessage ; address of MBC30 bank
+	ld bc, EASY_CHAT_MESSAGE_LENGTH
 	call CopyBytes
 	call CloseSRAM
 	ret

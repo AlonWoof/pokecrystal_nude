@@ -2976,7 +2976,7 @@ IncCrashCheckPointer_SaveChecksum:
 	inc_crash_check_pointer_farcall SaveChecksum
 
 IncCrashCheckPointer_SaveTrainerRankingsChecksum:
-	inc_crash_check_pointer_farcall UpdateTrainerRankingsChecksum2, BackupMobileEventIndex
+	inc_crash_check_pointer_farcall UpdateTrainerRankingsChecksum2, BackupGSBallFlag
 
 Function17e3e0:
 	call IncCrashCheckPointer
@@ -3866,7 +3866,7 @@ Function17f1d0:
 	call Function17f4f6
 	add hl, de
 	ld a, [hl]
-	ld a, $1
+	ld a, BANK(wNamedObjectIndex)
 	ldh [rSVBK], a
 	ld [wNamedObjectIndex], a
 	call GetPokemonName

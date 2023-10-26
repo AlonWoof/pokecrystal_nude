@@ -104,7 +104,7 @@ MoveMonWOMail_InsertMon_SaveGame:
 	call SaveBackupPokemonData
 	call SaveBackupChecksum
 	farcall BackupPartyMonMail
-	farcall BackupMobileEventIndex
+	farcall BackupGSBallFlag
 	farcall SaveRTC
 	call LoadBox
 	call ResumeGameLogic
@@ -161,17 +161,17 @@ AddHallOfFameEntry:
 	ld bc, wHallOfFamePokemonListEnd - wHallOfFamePokemonList + 1
 	call CopyBytes
 	call CloseSRAM
-; This vc_hook causes the Virtual Console to set [sMobileEventIndex] and [sMobileEventIndexBackup]
-; to MOBILE_EVENT_OBJECT_GS_BALL, which enables you to get the GS Ball, take it to Kurt, and
-; encounter Celebi. It assumes that sMobileEventIndex and sMobileEventIndexBackup are at their
+; This vc_hook causes the Virtual Console to set [sGSBallFlag] and [sGSBallFlagBackup]
+; to GS_BALL_AVAILABLE, which enables you to get the GS Ball, take it to Kurt, and
+; encounter Celebi. It assumes that sGSBallFlag and sGSBallFlagBackup are at their
 ; original addresses.
 	vc_hook Enable_GS_Ball_mobile_event
-	vc_assert BANK(sMobileEventIndex) == $1 && sMobileEventIndex == $be3c, \
-		"sMobileEventIndex is no longer located at 01:be3c."
-	vc_assert BANK(sMobileEventIndexBackup) == $1 && sMobileEventIndexBackup == $be44, \
-		"sMobileEventIndexBackup is no longer located at 01:be44."
-	vc_assert MOBILE_EVENT_OBJECT_GS_BALL == $0b, \
-		"MOBILE_EVENT_OBJECT_GS_BALL is no longer equal to $0b."
+	vc_assert BANK(sGSBallFlag) == $1 && sGSBallFlag == $be3c, \
+		"sGSBallFlag is no longer located at 01:be3c."
+	vc_assert BANK(sGSBallFlagBackup) == $1 && sGSBallFlagBackup == $be44, \
+		"sGSBallFlagBackup is no longer located at 01:be44."
+	vc_assert GS_BALL_AVAILABLE == $b, \
+		"GS_BALL_AVAILABLE is no longer equal to $b."
 	ret
 
 SaveGameData:
@@ -281,7 +281,7 @@ _SaveGameData:
 	call SaveBackupChecksum
 	call UpdateStackTop
 	farcall BackupPartyMonMail
-	farcall BackupMobileEventIndex
+	farcall BackupGSBallFlag
 	farcall SaveRTC
 	ld a, BANK(sBattleTowerChallengeState)
 	call OpenSRAM
@@ -401,20 +401,28 @@ EraseHallOfFame:
 	call ByteFill
 	jp CloseSRAM
 
-Function14d18: ; unreferenced
-	ld a, BANK(s4_a007) ; MBC30 bank used by JP Crystal; inaccessible by MBC3
+InitDefaultEZChatMsgs: ; unreferenced
+	ld a, BANK(sEZChatMessages) ; MBC30 bank used by JP Crystal; inaccessible by MBC3
 	call OpenSRAM
 	ld hl, .Data
-	ld de, s4_a007
-	ld bc, 4 * 12
+	ld de, sEZChatMessages
+	ld bc, EASY_CHAT_MESSAGE_LENGTH * 4
 	call CopyBytes
 	jp CloseSRAM
 
 .Data:
-	db $0d, $02, $00, $05, $00, $00, $22, $02, $01, $05, $00, $00
-	db $03, $04, $05, $08, $03, $05, $0e, $06, $03, $02, $00, $00
-	db $39, $07, $07, $04, $00, $05, $04, $07, $01, $05, $00, $00
-	db $0f, $05, $14, $07, $05, $05, $11, $0c, $0c, $06, $06, $04
+; introduction
+	db $0d, EZCHAT_GREETINGS,    $00, EZCHAT_EXCLAMATIONS, $00, EZCHAT_POKEMON
+	db $22, EZCHAT_GREETINGS,    $01, EZCHAT_EXCLAMATIONS, $00, EZCHAT_POKEMON
+; begin battle
+	db $03, EZCHAT_BATTLE,       $05, EZCHAT_CONDITIONS,   $03, EZCHAT_EXCLAMATIONS
+	db $0e, EZCHAT_CONVERSATION, $03, EZCHAT_GREETINGS,    $00, EZCHAT_POKEMON
+; win battle
+	db $39, EZCHAT_FEELINGS,     $07, EZCHAT_BATTLE,       $00, EZCHAT_EXCLAMATIONS
+	db $04, EZCHAT_FEELINGS,     $01, EZCHAT_EXCLAMATIONS, $00, EZCHAT_POKEMON
+; lose battle
+	db $0f, EZCHAT_EXCLAMATIONS, $14, EZCHAT_FEELINGS,     $05, EZCHAT_EXCLAMATIONS
+	db $11, EZCHAT_TIME,         $0c, EZCHAT_CONVERSATION, $06, EZCHAT_BATTLE
 
 EraseBattleTowerStatus:
 	ld a, BANK(sBattleTowerChallengeState)
@@ -451,11 +459,11 @@ Function14d83: ; unreferenced
 	call CloseSRAM
 	ret
 
-Function14d93: ; unreferenced
-	ld a, BANK(s7_a000) ; MBC30 bank used by JP Crystal; inaccessible by MBC3
+DisableMobileStadium: ; unreferenced
+	ld a, BANK(sMobileStadiumFlag)
 	call OpenSRAM
 	xor a
-	ld [s7_a000], a ; address of MBC30 bank
+	ld [sMobileStadiumFlag], a
 	call CloseSRAM
 	ret
 
@@ -592,7 +600,7 @@ TryLoadSaveFile:
 	call LoadPokemonData
 	call LoadBox
 	farcall RestorePartyMonMail
-	farcall RestoreMobileEventIndex
+	farcall RestoreGSBallFlag
 	farcall RestoreMysteryGift
 	call ValidateBackupSave
 	call SaveBackupOptions
@@ -609,7 +617,7 @@ TryLoadSaveFile:
 	call LoadBackupPokemonData
 	call LoadBox
 	farcall RestorePartyMonMail
-	farcall RestoreMobileEventIndex
+	farcall RestoreGSBallFlag
 	farcall RestoreMysteryGift
 	call ValidateSave
 	call SaveOptions

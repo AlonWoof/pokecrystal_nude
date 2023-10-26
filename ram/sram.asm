@@ -137,11 +137,11 @@ sHallOfFameEnd::
 
 SECTION "SRAM Crystal Data", SRAM
 
-sMobileEventIndex:: db
+sGSBallFlag:: db
 
 sCrystalData:: ds wCrystalDataEnd - wCrystalData
 
-sMobileEventIndexBackup:: db
+sGSBallFlagBackup:: db
 
 
 SECTION "SRAM Battle Tower", SRAM
@@ -201,11 +201,12 @@ SECTION "SRAM Mobile 1", SRAM
 
 	ds $7
 
-s4_a007:: ; struct size $30
-
-	ds $c
-
-s4_a013:: ds 36
+sEZChatMessages::
+sEZChatIntroductionMessage:: ds EASY_CHAT_MESSAGE_LENGTH
+sEZChatBattleMessages::
+sEZChatBeginBattleMessage::  ds EASY_CHAT_MESSAGE_LENGTH
+sEZChatWinBattleMessage::    ds EASY_CHAT_MESSAGE_LENGTH
+sEZChatLoseBattleMessage::   ds EASY_CHAT_MESSAGE_LENGTH
 
 s4_a037:: ds 4
 
@@ -225,12 +226,12 @@ sMobileBattleTimer:: ds 3
 
 	ds $7fd
 
-s4_b000:: db
+sMobileAdapterStatus:: db
 
 
 SECTION "SRAM Mobile 2", SRAM
 
-	ds 1 ; JP: location of sMobileEventIndex
+sGSBallFlagJP:: db ; unused
 
 sTrainerRankings::
 sTrainerRankingGameTimeHOF:: ds 4
@@ -278,7 +279,7 @@ sTrainerRankingBugContestScore:: ds 2
 sTrainerRankingsChecksum:: ds 2
 sTrainerRankingsEnd::
 
-	ds 1 ; JP: location of sMobileEventIndexBackup
+sGSBallFlagBackupJP:: db ; unused
 
 sTrainerRankingsBackup:: ds sTrainerRankingsEnd - sTrainerRankings
 
@@ -392,9 +393,9 @@ s6_a006:: ds $1000
 
 SECTION "SRAM Mobile 4", SRAM
 
-s7_a000:: db
+sMobileStadiumFlag:: db
 s7_a001:: db
 
 	ds $7fe
 
-s7_a800:: db
+sMobileAdapterStatus2:: db

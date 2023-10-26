@@ -50,6 +50,7 @@ Fixes in the [multi-player battle engine](#multi-player-battle-engine) category 
   - [Love Ball boosts catch rate for the wrong gender](#love-ball-boosts-catch-rate-for-the-wrong-gender)
   - [Fast Ball only boosts catch rate for three Pokémon](#fast-ball-only-boosts-catch-rate-for-three-pok%C3%A9mon)
   - [Heavy Ball uses wrong weight value for three Pokémon](#heavy-ball-uses-wrong-weight-value-for-three-pok%C3%A9mon)
+  - [PRZ and BRN stat reductions don't apply to switched Pokémon](#prz-and-brn-stat-reductions-dont-apply-to-switched-pok%C3%A9mon)
   - [Glacier Badge may not boost Special Defense depending on the value of Special Attack](#glacier-badge-may-not-boost-special-defense-depending-on-the-value-of-special-attack)
   - ["Smart" AI encourages Mean Look if its own Pokémon is badly poisoned](#smart-ai-encourages-mean-look-if-its-own-pok%C3%A9mon-is-badly-poisoned)
   - ["Smart" AI discourages Conversion2 after the first turn](#smart-ai-discourages-conversion2-after-the-first-turn)
@@ -58,6 +59,7 @@ Fixes in the [multi-player battle engine](#multi-player-battle-engine) category 
   - [AI makes a false assumption about `CheckTypeMatchup`](#ai-makes-a-false-assumption-about-checktypematchup)
   - [AI use of Full Heal or Full Restore does not cure Nightmare status](#ai-use-of-full-heal-or-full-restore-does-not-cure-nightmare-status)
   - [AI use of Full Heal does not cure confusion status](#ai-use-of-full-heal-does-not-cure-confusion-status)
+  - [AI might use its base reward value as an item](#ai-might-use-its-base-reward-value-as-an-item)
   - [Wild Pokémon can always Teleport regardless of level difference](#wild-pok%C3%A9mon-can-always-teleport-regardless-of-level-difference)
   - [`RIVAL2` has lower DVs than `RIVAL1`](#rival2-has-lower-dvs-than-rival1)
   - [`HELD_CATCH_CHANCE` has no effect](#held_catch_chance-has-no-effect)
@@ -613,10 +615,15 @@ This bug affects Attract, Curse, Foresight, Mean Look, Mimic, Nightmare, Spider 
 ```diff
  CheckHiddenOpponent:
 -; BUG: Lock-On and Mind Reader don't always bypass Fly and Dig (see docs/bugs_and_glitches.md)
--	ld a, BATTLE_VARS_SUBSTATUS3_OPP
--	call GetBattleVar
--	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
-+	xor a
++	ld a, BATTLE_VARS_SUBSTATUS5_OPP
++	call GetBattleVar
++	cpl
++	and 1 << SUBSTATUS_LOCK_ON
++	ret z
++
+ 	ld a, BATTLE_VARS_SUBSTATUS3_OPP
+ 	call GetBattleVar
+ 	and 1 << SUBSTATUS_FLYING | 1 << SUBSTATUS_UNDERGROUND
  	ret
 ```
 
@@ -1251,6 +1258,24 @@ This can occur if your party and current PC box are both full when you start the
 ```
 
 
+### PRZ and BRN stat reductions don't apply to switched Pokémon
+
+This does not affect link battles or Battle Tower battles because those jump from `LoadEnemyMon` to `InitEnemyMon`, which already calls `ApplyStatusEffectOnEnemyStats`.
+
+**Fix:** Edit `LoadEnemyMon` in [engine/battle/core.asm](https://github.com/pret/pokecrystal/blob/master/engine/battle/core.asm):
+
+```diff
+ 	ld hl, wEnemyMonStats
+ 	ld de, wEnemyStats
+ 	ld bc, NUM_EXP_STATS * 2
+ 	call CopyBytes
+
+-; BUG: PRZ and BRN stat reductions don't apply to switched Pokémon (see docs/bugs_and_glitches.md)
++	call ApplyStatusEffectOnEnemyStats
+ 	ret
+```
+
+
 ### Glacier Badge may not boost Special Defense depending on the value of Special Attack
 
 Pryce's dialog ("That BADGE will raise the SPECIAL stats of POKéMON.") implies that Glacier Badge is intended to boost both Special Attack and Special Defense, but the Special Defense boost will not happen unless the unboosted Special Attack stat is 206–432, or 661 or above.
@@ -1429,6 +1454,33 @@ Pryce's dialog ("That BADGE will raise the SPECIAL stats of POKéMON.") implies 
  	ld hl, wEnemySubStatus5
  	res SUBSTATUS_TOXIC, [hl]
  	ret
+```
+
+### AI might use its base reward value as an item
+
+In the `AI_TryItem` routine, an item pointer is set to `wEnemyTrainerItem1` and then increments to `wEnemyTrainerItem2` to see if either of the AI's items are in the `AI_Items` list. However, if the AI has used its first item (or its first one is `ITEM_NONE`) and hasn't used its second item, the item pointer can increment from `wEnemyTrainerItem2` to `wEnemyTrainerBaseReward`. If the value at this address then matches an item in the `AI_Items` list, the AI could mistakenly use it.
+
+**Fix:** Edit `AI_TryItem` in [engine/battle/ai/items.asm](https://github.com/pret/pokecrystal/blob/master/engine/battle/ai/items.asm):
+
+```diff
+ AI_TryItem:
+  	...
+ 	ld a, [wTrainerClass]
+ 	dec a
+ 	ld hl, TrainerClassAttributes + TRNATTR_AI_ITEM_SWITCH
+ 	ld bc, NUM_TRAINER_ATTRIBUTES
+ 	call AddNTimes
+ 	ld b, h
+ 	ld c, l
+ 	ld hl, AI_Items
+-; BUG: AI might use its base reward value as an item (see docs/bugs_and_glitches.md)
+-	ld de, wEnemyTrainerItem1
+ .loop
++	ld de, wEnemyTrainerItem1
+ 	ld a, [hl]
+ 	and a
+ 	inc a
+ 	ret z
 ```
 
 
@@ -2648,7 +2700,7 @@ If `IsInArray` returns `nc`, data at `bc` will be executed as code.
 -; BUG: BattleAnimCmd only clears the first 6⅔ objects (see docs/bugs_and_glitches.md)
  	ld hl, wActiveAnimObjects
 -	ld a, $a0
-+	ld a, NUM_ANIM_OBJECTS * BATTLEANIMSTRUCT_LENGTH
++	ld a, NUM_BATTLE_ANIM_STRUCTS * BATTLEANIMSTRUCT_LENGTH
  .loop
  	ld [hl], 0
  	inc hl
